@@ -1,4 +1,5 @@
 # RVCK
+
 [RVCK-Project](https://github.com/RVCK-Project) 项目 **CI** 的**Jenkinsfile**
 
 ## 项目地址
@@ -29,26 +30,37 @@
 PR/issue -> webhook -> jenkins job -> 分析 issue:/check sg2042 commitid , PR： /check -> gh 回复 开始，并打标签 -> kernel 构建 -> gh回复构建结果，并打标签 -> 触发lavacli -> Lava -> Lava agent（qemu sg2042 lpi4a unmatched visionfive2 k1）-> 结果显示网页kernelci -> lavacli 获取结果（result,url）-> gh回复结果，并打标签 -> issue/pr 
 
 #### job
+
 ##### rvck/rvck-webhook
-* 识别 ISSUE comments、PR回复中的 /check
+
+* 识别 `ISSUE`、 `ISSUE|PR comments`、`PR`中的 `/check` 指令
 * 有PR时就会回复开始测试。并返回结果
 * 获取PR的id并向kernel-build传递
 * 获取PR的url并向kernel-build传递
 * 获取需要回复信息的URL
-* 获取 /check 的参数 lava_template、testcase_url、testcase，并传递给rvck-lava-trigger
+* 获取 /check 的参数，并传递给`rvck-lava-trigger`
 
-###### /check
-指令模板：   
-``` 
-/check  lava模板文件路径  lava测试用例路径  测试用例的参数(ltp测试时，参数为all，设置为空，效果为执行全部ltp测试)  
-/check ${lava_template} ${testcase_url} ${testcase}
+###### /check 参数解析
 
-Example:
-/check lava-job-template/qemu/qemu-ltp.yaml lava-testcases/common/ltp/ltp.yaml math 
+指令模板：`/check [key=value ...]`
 
-/check lava-job-template/qemu/qemu-ltp.yaml lava-testcases/common/ltp/ltp.yaml all
+|支持的key|描述|默认值|获取途径|
+|:-:|:-:|:-:|:-:|
+|lava_template|lava模板文件路径|lava-job-template/qemu/qemu-ltp.yaml|从[RAVA项目](https://github.com/RVCK-Project/lavaci)获取|
+|testcase_url|lava测试用例路径|llava-testcases/common-test/ltp/ltp.yaml|从[RAVA项目](https://github.com/RVCK-Project/lavaci)获取|
+|testcase|测试用例的参数(ltp测试时，设置为空，效果为执行全部ltp测试)|math|从[RAVA项目](https://github.com/RVCK-Project/lavaci)获取|
+|fetch|当前仓库的分支名或commmit_sha,用于拉去代码. ISSUE、ISSUE_COMMENT 必要参数。|PR=pull/`<PRid>`/head, issue必填参数|当前仓库的分支名，或commit_sha|
+
+```bash
+# Example:
+/check lava_template='path/to/lava template.yaml' testcase_url=path/to/xxx.yaml testcase=math
+
+# 全量ltp测试
+/check lava_template='path/to/lava template.yaml' testcase_url=path/to/xxx.yaml testcase=
+### or
+/check lava_template='path/to/lava template.yaml' testcase_url=path/to/xxx.yaml testcase=''
 ```
-> **lava模板文件路径**、**lava测试用例路径**、**测试用例的参数**从[RAVA项目](https://github.com/RVCK-Project/lavaci)获取
+
 ##### rvck/rvck-lava-trigger
 * 获取 kernel-build 传递的变量
 

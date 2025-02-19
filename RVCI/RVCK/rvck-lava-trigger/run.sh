@@ -1,10 +1,9 @@
-#！/usr/bin/env bash
+#!/usr/bin/env bash
 set -e
 set -x
 
 repo_name=$(echo ${REPO##h*/} | awk -F'.' '{print $1}')
 qemu_job_name=${repo_name}_pr_${ISSUE_ID}
-lava_template=lava-job-template/qemu/qemu-ltp.yaml
 device_type=$(yq .device_type ${lava_template})
 testcase_name=$(echo ${testcase_url} | awk -F'/' '{print $2}')
 testitem_name=${repo_name}_${testcase_name}_${device_type}
