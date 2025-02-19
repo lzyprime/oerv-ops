@@ -49,6 +49,7 @@ Example:
 /check lava-job-template/qemu/qemu-ltp.yaml lava-testcases/common/ltp/ltp.yaml all
 ```
 > **lava模板文件路径**、**lava测试用例路径**、**测试用例的参数**从[RAVA项目](https://github.com/RVCK-Project/lavaci)获取
+
 ##### rvck/rvck-lava-trigger
 * 获取 kernel-build 传递的变量
 

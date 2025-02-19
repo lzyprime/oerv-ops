@@ -10,9 +10,9 @@ rootfs_download_url=http://${download_server}/openEuler24.03-LTS-SP1/openeuler-r
 
 # init evnironment
 if [ -f evnironment.temp ];then
-	rm -f evnironment.temp
+	rm -rf evnironment.temp
 fi
-touch evnironment.temp
+mkdir evnironment.temp
 
 # yum install 
 sudo yum makecache
@@ -46,7 +46,5 @@ fi
 popd
 
 # pass download url
-cat <<EOF | tee evnironment.temp
-kernel_download_url=${kernel_download_url}
-rootfs_download_url=${rootfs_download_url}
-EOF
+echo "${kernel_download_url}" > evnironment.temp/kernel_download_url
+echo "${rootfs_download_url}" > evnironment.temp/rootfs_download_url
